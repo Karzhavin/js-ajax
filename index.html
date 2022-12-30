@@ -3,11 +3,38 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
+    <title>Searcher</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div style="height: 100%; width: 100%; background-color: aqua;">
-        <p>Hello World!</p>
-    </div>
+    <main class="main-page">
+      <div class="column-wrapper">
+        <div class="column-row">
+          <div class="column column_s-2 column_m-6 column_l-12">
+            <h1 class="main-page__heading">Searcher</h1>
+          </div>
+          <div class="column column_s-2 column_m-4 column_l-8">
+            <article class="search-view">
+              <input class="search-view__line" type="text" value="" placeholder="Введите текст">
+              <div class="pop-up">
+                <ul class="search-view__result-list">
+                  <li class="search-view__result-item"></li>
+                  <li class="search-view__result-item"></li>
+                  <li class="search-view__result-item"></li>
+                </ul>
+                <div class="search-view__description-of-search-pick">
+                  <iframe src="" frameborder="0"></iframe>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="column column_s-2 column_m-2 column_l-4">
+            <aside class="search-history"></aside>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="scripts/grid.js"></script>
+    <script src="scripts/searcher.js"></script>
   </body>
 </html>

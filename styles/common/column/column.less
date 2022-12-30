@@ -1,0 +1,87 @@
+@column-count-s: 2;
+@column-count-m: 6;
+@column-count-l: 12;
+
+@gap-column-count-s: 1;
+@gap-column-count-m: 5;
+@gap-column-count-l: 11;
+
+.column-wrapper {
+    margin: 0 auto;
+    padding: 0 15px;
+
+    @media @screen-gt-s {
+        width: @column-width-m * @column-count-m + @column-gap-m * @gap-column-count-m;
+    }
+
+    @media @screen-gt-m {
+        width: @column-width-l * @column-count-l + @column-gap-l * @gap-column-count-l;
+    }
+}
+
+.column-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @gap-s;
+
+    @media @screen-gt-s {
+        gap: @gap-m;
+    }
+
+    @media @screen-gt-m {
+        gap: @gap-l;
+    }
+
+    &_list {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        row-gap: 30px;
+    }
+
+    &_footer {
+        align-items: center;
+        row-gap: 30px;
+    }
+}
+
+/**
+ * Переменные и функции в less не хотят работать с calc(), поэтому придётся прописать вручную
+ * css-правила для модификаторов column_s-1 и column_s-2
+ */ 
+
+.column {
+    box-sizing: border-box;
+
+    &_s-1 {
+        width: calc(@column-width-s - 5px);
+    }
+
+    &_s-2 {
+        width: calc((@column-width-s - 5px) * 2 + @column-gap-s);
+    }
+
+    &_desktop-visible {
+        display: none;
+
+        @media @screen-gt-m {
+            display: block;
+        }
+    }
+}
+
+@media @screen-gt-s {
+    each(range(@column-count-m), {
+        .column_m-@{value} {
+            width: @column-width-m * @value + @column-gap-m * (@value - 1);
+        }
+    })
+}
+
+@media @screen-gt-m {
+    each(range(@column-count-l), {
+        .column_l-@{value} {
+            width: @column-width-l * @value + @column-gap-l * (@value - 1);
+        }
+    })
+}

@@ -6,9 +6,11 @@
   "author": "Gleb Karzhavin <karzhav1n@yandex.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "less": "lessc styles/styles.less styles.css"
   },
   "devDependencies": {
+    "less": "^4.1.3",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",

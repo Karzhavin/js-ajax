@@ -1,0 +1,29 @@
+.grid {
+    background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 calc(50% - 5px), rgba(255, 255, 255, 0.1) calc(50% - 5px) calc(50% + 5px));
+    width: calc(@column-width-s * 2 - 30px);
+    margin: 0 auto;
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 9999;
+    display: none;
+    pointer-events: none;
+
+    @media @screen-gt-s {
+        background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 90px, rgba(255, 255, 255, 0.1) 90px 120px);
+        width: calc(@column-width-m * 6 + @column-gap-m * 5);
+    }
+
+    @media @screen-gt-m {
+        background: repeating-linear-gradient(to right, rgba(255, 0, 0, 0.1) 0 50px, rgba(255, 255, 255, 0.1) 50px 80px);
+        width: calc(@column-width-l * 12 + @column-gap-l * 11);
+    }
+}
+
+.grid_visible {
+    display: block;
+}
