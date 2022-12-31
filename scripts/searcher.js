@@ -1,6 +1,11 @@
 async function getBooksData(title) {
     try {
-        const response = await fetch(`http://openlibrary.org/search.json?title=${title}`);
+        const response = await fetch(`https://openlibrary.org/search.json?q=${title}&fields=key,title&limit=10`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
@@ -8,6 +13,11 @@ async function getBooksData(title) {
     } catch (error) {
         console.error(`Could not get products: ${error}`);
     }    
+}
+
+async function getBook(key) {
+    const response = await fetch(`https://openlibrary.org/works/${key}.json`);
+    return response.json();  
 }
 
 const searchLine = document.querySelector('.search-view__line');
