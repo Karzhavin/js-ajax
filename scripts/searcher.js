@@ -2,16 +2,14 @@ async function getBooksData(title) {
     try {
         const response = await fetch(`https://openlibrary.org/search.json?q=${title}&fields=key,title&limit=10`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
         return response.json();
     } catch (error) {
-        console.error(`Could not get products: ${error}`);
+        console.error(`${error}`);
+        return error;
     }    
 }
 
@@ -28,7 +26,7 @@ searchLine.addEventListener('input', (event) => {
         const result = await getBooksData(input);
         const books = result.docs;
         console.log(books)
-        
+        /*
         books.reduce((result, books) => {
             // Исправить поля!!
             result[books.title] = {
@@ -39,5 +37,6 @@ searchLine.addEventListener('input', (event) => {
             return result;
         });
         console.log(result);
+        */
     })();
 });
