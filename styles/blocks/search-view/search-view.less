@@ -1,13 +1,35 @@
 .search-view {
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
 
     &__line {
-
+        margin: 0;
+        padding: 8px 18px;
+        border: 2px solid lightgray;
+        border-radius: 20px;
+        font-size: 18px;
     }
 
     &__result-list {
-        
+        margin: 0;
+        padding: 12px 18px;
     }
+
+    &__result-item {
+        padding: 4px 0;
+    }
+
+    &__result-item:hover {
+        background-color: lightgrey;
+        cursor: pointer;
+    }
+
+    &__description-container {
+        margin: 0;
+        padding: 8px 18px;
+        border: 2px solid lightgray;
+        border-radius: 10px
+    }
+
+    &__item-image {}
 }
