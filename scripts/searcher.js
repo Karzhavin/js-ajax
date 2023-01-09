@@ -61,7 +61,6 @@ searchLine.addEventListener('input', () => {
             books.push([book.key, book.title]);
         });
         createListOfBooks(books);
-        console.log(123);
     })();
 });
 
