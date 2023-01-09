@@ -1,7 +1,6 @@
 body {
   margin: 0;
   background-color: #fff;
-  font-size: 14px;
   font-family: sans-serif;
   color: #333;
 }
@@ -156,52 +155,105 @@ body {
   padding: 0;
   list-style-type: none;
 }
-.pop-up {
-  display: none;
-}
-.pop-up_visible {
-  display: block;
-}
 .main-page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 100vh;
-  min-height: 500px;
+  height: 100%;
+  padding-top: 5%;
 }
 .main-page__heading {
   margin: 0;
   text-align: center;
   font-size: 42px;
+  font-weight: 300;
   color: darkgray;
 }
 .search-view {
   display: flex;
   flex-direction: column;
+  position: relative;
+  border: 2px solid lightgrey;
+  box-shadow: 0 0 3px 0 lightgrey;
+  border-radius: 20px;
+  overflow: hidden;
 }
 .search-view__line {
   margin: 0;
-  padding: 8px 18px;
-  border: 2px solid lightgray;
-  border-radius: 20px;
+  padding: 8px 16px;
+  border: none;
   font-size: 18px;
+  font-weight: 300;
+}
+.search-view__line:focus {
+  outline: none;
+}
+.search-view__separator {
+  display: none;
+  width: calc(100%);
+  height: 1px;
+  margin: 0 auto;
+  border: none;
+  background-color: lightgrey;
+}
+.search-view__separator_visible {
+  display: block;
+}
+.search-view__pop-up {
+  display: none;
+}
+.search-view__pop-up_visible {
+  display: block;
 }
 .search-view__result-list {
   margin: 0;
-  padding: 12px 18px;
+  padding: 8px 0;
 }
 .search-view__result-item {
-  padding: 4px 0;
+  padding: 6px 16px;
+  font-size: 16px;
+  font-weight: 300;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .search-view__result-item {
+    white-space: normal;
+  }
 }
 .search-view__result-item:hover {
   background-color: lightgrey;
   cursor: pointer;
 }
-.search-view__description-container {
+.search-view__detailed-information {
+  display: none;
+  gap: 20px;
   margin: 0;
-  padding: 8px 18px;
-  border: 2px solid lightgray;
-  border-radius: 10px;
+  padding: 20px;
+  border-top: 1px solid lightgray;
+}
+@media (min-width: 768px) {
+  .search-view__detailed-information_visible {
+    display: flex;
+  }
+}
+.search-view__item-image {
+  border: 1px solid lightgray;
+  background-color: gainsboro;
+}
+.search-view__description-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 140px;
+  font-size: 13px;
+  overflow: hidden;
+}
+.search-view__item-title {
+  margin: 0;
+  margin-bottom: 5px;
+}
+.search-view__item-row {
+  display: flex;
 }
 .search-history {
   border: 1px solid black;
