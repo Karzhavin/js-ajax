@@ -3,34 +3,31 @@
  */ 
 
 async function getBooksData(title) {
-    try {
-        const response = await fetch(`https://openlibrary.org/search.json?q=${title}&fields=key,title&limit=10`, {
-            method: 'GET',
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
+    const response = await fetch(`https://openlibrary.org/search.json?q=${title}&fields=key,title&limit=10`, {
+        method: 'GET',
+    });
+    if (response.ok) {
         return response.json();
-    } catch (error) {
-        console.error(`${error}`);
-        return error;
     }
+    const error = {
+        status: response.status,
+        customError: 'Houston, we have a problem!',
+    };
+    throw error;
 }
 
 async function getBookInfo(key) {
-    try {
-        const response = await fetch(`https://openlibrary.org${key}.json`, {
-            method: 'GET',
-        });
-        console.log(response);
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
-        return response.json(); 
-    } catch (error) {
-        console.error(`${error}`);
-        return error;
+    const response = await fetch(`https://openlibrary.org${key}.json`, {
+        method: 'GET',
+    });
+    if (response.ok) {
+        return response.json();
     }
+    const error = {
+        status: response.status,
+        customError: 'Not found!',
+    };
+    throw error;
 }
 
 /**
@@ -52,13 +49,19 @@ searchLine.addEventListener('input', () => {
     }
     (async function() {
         const input = searchLine.value.replace(/\s+/g, '+');
-        const result = await getBooksData(input);
+        let result = {};
+        try {
+            result = await getBooksData(input);
+        } catch (error) {
+            return;
+        }
         const books = [];
 
         result.docs.forEach((book) => {
             books.push([book.key, book.title]);
         });
         createListOfBooks(books);
+        console.log(123);
     })();
 });
 
@@ -67,32 +70,92 @@ const detailedInformation = document.querySelector('.search-view__detailed-infor
 
 const bookImage = document.querySelector('.search-view__item-image');
 const bookTitle = document.querySelector('.search-view__item-title');
-const bookAuthor = document.querySelector('.search-view__item-author');
-const bookYear = document.querySelector('.search-view__item-year');
+// const bookAuthor = document.querySelector('.search-view__item-author');
+// const bookYear = document.querySelector('.search-view__item-year');
 const bookDescription = document.querySelector('.search-view__item-description');
 
 function createListOfBooks(books) {
-  const newList = books.slice();
+    const newList = books.slice();
+  
+    while (resultList.firstChild) {
+      resultList.removeChild(resultList.firstChild);
+    }
 
-  while (resultList.firstChild) {
-    resultList.removeChild(resultList.firstChild);
-  }
+    if (localStorage.getItem('links')) {
+        let counter = 5;
+        const searchHistory = JSON.parse(localStorage.getItem('links'));
+        for (let i = 0; i < searchHistory.length; i++) {
+            createBookPoint(searchHistory[i]);
+            counter -= 1;
+            if (counter === 0) {
+                break;
+            }
+        }
+        counter += 5;
+        for (let j = 0; j < newList.length; j++) {
+            createBookPoint(newList[j]);
+            counter -= 1;
+            if (counter === 0) {
+                break;
+            }
+        }
+    } else {
+        for (const book of newList) {
+            createBookPoint(book);
+        }
+    }
+}
 
-  for (const book of newList) {
+function createBookPoint(book) {
+    const listItemLink = document.createElement('a');
+    listItemLink.classList.add('search-view__result-item-link');
+    listItemLink.href = `https://openlibrary.org${book[0]}`;
+    listItemLink.target = '_blank';
+    listItemLink.textContent = book[1];
+    listItemLink.addEventListener('click', () => {
+        if (localStorage.getItem('links')) {
+            const linksArray = JSON.parse(localStorage.getItem('links'));
+            let newLink = true;
+            for (let i = 0; i < linksArray.length; i++) {
+                if (linksArray[i][0] === book[0]) {
+                    newLink = false;
+                    break;
+                }
+            }
+            if (newLink) {
+                linksArray.push(book);
+                try {
+                    localStorage.setItem('links', JSON.stringify(linksArray));
+                    createHistoryList(linksArray);
+                } catch (error) {
+                    console.log(`Clear your history!`);
+                }
+            }
+        } else {
+            localStorage.setItem('links', JSON.stringify([book]));
+            createHistoryList([book]);
+        }
+    });
+
     const listItem = document.createElement('li');
     listItem.classList.add('list__item');
     listItem.classList.add('search-view__result-item');
-    listItem.textContent = book[1];
+    listItem.appendChild(listItemLink);
     listItem.addEventListener('mouseover', () => {
         detailedInformation.classList.add('search-view__detailed-information_visible');
         (async function() {
-            const info = await getBookInfo(book[0]);
+            let info = {};
+            try {
+                info = await getBookInfo(book[0]);
+            } catch (error) {
+                console.log(error);
+                return;
+            }
             if (info.covers) {
                 bookImage.src = `https://covers.openlibrary.org/b/id/${info.covers[0]}-M.jpg`;
             } else {
                 bookImage.src = 'styles/blocks/search-view/none_image.png';
             }
-            console.log(info);
             if (info.title) {
                 bookTitle.textContent = info.title;
             } else {
@@ -113,5 +176,34 @@ function createListOfBooks(books) {
         detailedInformation.classList.remove('search-view__detailed-information_visible');
     });
     resultList.appendChild(listItem);
-  }
+}
+
+/**
+ * localStorage
+ */
+
+if (localStorage.getItem('links')) {
+    const searchHistory = JSON.parse(localStorage.getItem('links'));
+    createHistoryList(searchHistory);
+}
+
+function createHistoryList(array) {
+    const searchHistoryContainer = document.querySelector('.search-history-list');
+
+    while (searchHistoryContainer.firstChild) {
+        searchHistoryContainer.removeChild(searchHistoryContainer.firstChild);
+    }
+
+    array.forEach((item) => {
+        const historyLink = document.createElement('a');
+        historyLink.href = `https://openlibrary.org${item[0]}`;
+        historyLink.target = '_blank';
+        historyLink.textContent = item[1];
+
+        const historyItem = document.createElement('li');
+        historyItem.classList.add('search-history-list__item');
+        // listItem.classList.add('search-view__result-item');
+        historyItem.appendChild(historyLink);
+        searchHistoryContainer.appendChild(historyItem);
+    });
 }
