@@ -39,7 +39,7 @@ const separator = document.querySelector('.search-view__separator');
 const popUp = document.querySelector('.search-view__pop-up');
 searchLine.focus();
 
-searchLine.addEventListener('input', () => {
+function handleInput() {
     if (searchLine.value) {
         separator.classList.add('search-view__separator_visible');
         popUp.classList.add('search-view__pop-up_visible');
@@ -53,6 +53,7 @@ searchLine.addEventListener('input', () => {
         try {
             result = await getBooksData(input);
         } catch (error) {
+            console.log(error);
             return;
         }
         const books = [];
@@ -62,7 +63,11 @@ searchLine.addEventListener('input', () => {
         });
         createListOfBooks(books);
     })();
-});
+}
+
+const debouncedHandle = debounce(handleInput, 250)
+
+searchLine.addEventListener('input', debouncedHandle);
 
 const resultList = document.querySelector('.search-view__result-list');
 const detailedInformation = document.querySelector('.search-view__detailed-information');
@@ -140,7 +145,9 @@ function createBookPoint(book) {
     listItem.classList.add('list__item');
     listItem.classList.add('search-view__result-item');
     listItem.appendChild(listItemLink);
-    listItem.addEventListener('mouseover', () => {
+    const debouncedFillInfo = debounce(fillDetailedInformation, 250)
+    listItem.addEventListener('mouseover', debouncedFillInfo);
+    function fillDetailedInformation() {
         detailedInformation.classList.add('search-view__detailed-information_visible');
         (async function() {
             let info = {};
@@ -170,7 +177,7 @@ function createBookPoint(book) {
                 bookDescription.textContent = 'none description';
             }
         })();
-    });
+    } 
     listItem.addEventListener('mouseout', () => {
         detailedInformation.classList.remove('search-view__detailed-information_visible');
     });
@@ -206,3 +213,22 @@ function createHistoryList(array) {
         searchHistoryContainer.appendChild(historyItem);
     });
 }
+
+/**
+ * debounce()
+ */
+
+function debounce(callee, timeoutMs) {
+    return function perform(...args) {
+
+      let previousCall = this.lastCall
+      this.lastCall = Date.now()
+
+      if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+        clearTimeout(this.lastCallTimer)
+      }
+  
+      this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
+    }
+  }
+  
