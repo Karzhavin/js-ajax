@@ -40,6 +40,8 @@ const popUp = document.querySelector('.search-view__pop-up');
 searchLine.focus();
 
 function handleInput() {
+    // Добавляем черту, разделяющую запрос и результаты поиска, в зависимости от состояния строки
+    // ввода 
     if (searchLine.value) {
         separator.classList.add('search-view__separator_visible');
         popUp.classList.add('search-view__pop-up_visible');
@@ -80,10 +82,14 @@ const bookDescription = document.querySelector('.search-view__item-description')
 
 function createListOfBooks(books) {
     const newList = books.slice();
+
+    // Стираем предыдущий вывод результатов поиска
   
     while (resultList.firstChild) {
       resultList.removeChild(resultList.firstChild);
     }
+
+    // Просматриваем localStorage на наличие записанных поисковых запросов
 
     if (localStorage.getItem('links')) {
         let counter = 5;
@@ -116,6 +122,7 @@ function createBookPoint(book) {
     listItemLink.href = `https://openlibrary.org${book[0]}`;
     listItemLink.target = '_blank';
     listItemLink.textContent = book[1];
+    // Отслеживаем переходы по ссылкам и сохраняем в localStorage
     listItemLink.addEventListener('click', () => {
         if (localStorage.getItem('links')) {
             const linksArray = JSON.parse(localStorage.getItem('links'));
@@ -157,6 +164,8 @@ function createBookPoint(book) {
                 console.log(error);
                 return;
             }
+            // Проверяем данные, полученные с сервера, если какой-либо пункт отсутствует заменяем
+            // его заглушкой
             if (info.covers) {
                 bookImage.src = `https://covers.openlibrary.org/b/id/${info.covers[0]}-M.jpg`;
             } else {
