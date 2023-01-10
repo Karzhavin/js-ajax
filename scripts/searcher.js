@@ -93,7 +93,10 @@ function createListOfBooks(books) {
 
     if (localStorage.getItem('links')) {
         let counter = 5;
-        const searchHistory = JSON.parse(localStorage.getItem('links'));
+        let searchHistory = JSON.parse(localStorage.getItem('links'));
+        if (searchHistory.length > 5) {
+            searchHistory = searchHistory.slice(-5);
+        }
         for (let i = 0; i < searchHistory.length; i++) {
             createBookPoint(searchHistory[i]);
             counter -= 1;
@@ -209,7 +212,9 @@ function createHistoryList(array) {
         searchHistoryContainer.removeChild(searchHistoryContainer.firstChild);
     }
 
-    array.forEach((item) => {
+    const lastThree = array.slice(-3);
+
+    lastThree.forEach((item) => {
         const historyLink = document.createElement('a');
         historyLink.href = `https://openlibrary.org${item[0]}`;
         historyLink.target = '_blank';
