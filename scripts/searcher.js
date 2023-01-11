@@ -1,8 +1,7 @@
-/**
- * Requests Section
- */ 
+/* API Requests:
+   ========================================================================== */
 
-async function getBooksData(title) {
+async function getBookData(title) {
     const response = await fetch(`https://openlibrary.org/search.json?q=${title}&fields=key,title&limit=10`, {
         method: 'GET',
     });
@@ -30,74 +29,68 @@ async function getBookInfo(key) {
     throw error;
 }
 
-/**
- * Events Section
- */ 
+/* Events of Window Section:
+   ========================================================================== */
 
 const searchLine = document.querySelector('.search-view__line');
-const separator = document.querySelector('.search-view__separator');
-const popUp = document.querySelector('.search-view__pop-up');
 searchLine.focus();
+const debouncedHandle = debounce(handleInput, 250);
+searchLine.addEventListener('input', debouncedHandle);
+
+/* Operations of Search Line:
+   ========================================================================== */
+
+/**
+ * 1. Handle Input
+ */
 
 function handleInput() {
-    // Добавляем черту, разделяющую запрос и результаты поиска, в зависимости от состояния строки
-    // ввода 
-    if (searchLine.value) {
-        separator.classList.add('search-view__separator_visible');
-        popUp.classList.add('search-view__pop-up_visible');
-    } else {
-        separator.classList.remove('search-view__separator_visible');
-        popUp.classList.remove('search-view__pop-up_visible');
-    }
     (async function() {
         const input = searchLine.value.replace(/\s+/g, '+');
-        let result = {};
-        try {
-            result = await getBooksData(input);
-        } catch (error) {
-            console.log(error);
-            return;
+        if (input) {
+            let result = {};
+            try {
+                result = await getBookData(input);
+            } catch (error) {
+                console.log(error);
+                return;
+            }
+            const books = [];
+            result.docs.forEach((book) => {
+                books.push([book.key, book.title]);
+            });
+            createListOfBooks(books);
+            popUpState(true);
+        } else {
+            popUpState(false);
+            while (resultList.firstChild) {
+                resultList.removeChild(resultList.firstChild);
+            }
         }
-        const books = [];
-
-        result.docs.forEach((book) => {
-            books.push([book.key, book.title]);
-        });
-        createListOfBooks(books);
     })();
 }
 
-const debouncedHandle = debounce(handleInput, 250)
-
-searchLine.addEventListener('input', debouncedHandle);
+/**
+ * 2. Create List:
+ * 
+ * -- Fill in Result List
+ */
 
 const resultList = document.querySelector('.search-view__result-list');
-const detailedInformation = document.querySelector('.search-view__detailed-information');
-
-const bookImage = document.querySelector('.search-view__item-image');
-const bookTitle = document.querySelector('.search-view__item-title');
-// const bookAuthor = document.querySelector('.search-view__item-author');
-// const bookYear = document.querySelector('.search-view__item-year');
-const bookDescription = document.querySelector('.search-view__item-description');
 
 function createListOfBooks(books) {
     const newList = books.slice();
-
-    // Стираем предыдущий вывод результатов поиска
-  
     while (resultList.firstChild) {
       resultList.removeChild(resultList.firstChild);
     }
-
-    // Просматриваем localStorage на наличие записанных поисковых запросов
-
-    if (localStorage.getItem('links')) {
+    if (localStorage.getItem('links') && localStorage.getItem('links') !== 'null') {
         let counter = 5;
         let searchHistory = JSON.parse(localStorage.getItem('links'));
         if (searchHistory.length > 5) {
             searchHistory = searchHistory.slice(-5);
         }
         for (let i = 0; i < searchHistory.length; i++) {
+            searchHistory[i][1] = `- ${searchHistory[i][1]}`;
             createBookPoint(searchHistory[i]);
             counter -= 1;
             if (counter === 0) {
@@ -119,15 +112,23 @@ function createListOfBooks(books) {
     }
 }
 
+/**
+ * -- Create One Point of List
+ */
+
+const detailedInformation = document.querySelector('.search-view__detailed-information');
+const bookImage = document.querySelector('.search-view__item-image');
+const bookTitle = document.querySelector('.search-view__item-title');
+const bookDescription = document.querySelector('.search-view__item-description');
+
 function createBookPoint(book) {
     const listItemLink = document.createElement('a');
     listItemLink.classList.add('search-view__result-item-link');
     listItemLink.href = `https://openlibrary.org${book[0]}`;
     listItemLink.target = '_blank';
     listItemLink.textContent = book[1];
-    // Отслеживаем переходы по ссылкам и сохраняем в localStorage
     listItemLink.addEventListener('click', () => {
-        if (localStorage.getItem('links')) {
+        if (localStorage.getItem('links') && localStorage.getItem('links') !== 'null') {
             const linksArray = JSON.parse(localStorage.getItem('links'));
             let newLink = true;
             for (let i = 0; i < linksArray.length; i++) {
@@ -141,6 +142,7 @@ function createBookPoint(book) {
                 try {
                     localStorage.setItem('links', JSON.stringify(linksArray));
                     createHistoryList(linksArray);
+                    handleInput();
                 } catch (error) {
                     console.log(`Clear your history!`);
                 }
@@ -148,14 +150,14 @@ function createBookPoint(book) {
         } else {
             localStorage.setItem('links', JSON.stringify([book]));
             createHistoryList([book]);
+            handleInput();
         }
     });
-
     const listItem = document.createElement('li');
     listItem.classList.add('list__item');
     listItem.classList.add('search-view__result-item');
     listItem.appendChild(listItemLink);
-    const debouncedFillInfo = debounce(fillDetailedInformation, 250)
+    const debouncedFillInfo = debounce(fillDetailedInformation, 250);
     listItem.addEventListener('mouseover', debouncedFillInfo);
     function fillDetailedInformation() {
         detailedInformation.classList.add('search-view__detailed-information_visible');
@@ -167,8 +169,7 @@ function createBookPoint(book) {
                 console.log(error);
                 return;
             }
-            // Проверяем данные, полученные с сервера, если какой-либо пункт отсутствует заменяем
-            // его заглушкой
+            // Проверяем данные, полученные с сервера, если какой-либо пункт отсутствует заменяем его заглушкой
             if (info.covers) {
                 bookImage.src = `https://covers.openlibrary.org/b/id/${info.covers[0]}-M.jpg`;
             } else {
@@ -196,36 +197,22 @@ function createBookPoint(book) {
     resultList.appendChild(listItem);
 }
 
+
 /**
- * localStorage
+ * 3. PopUp
  */
 
-if (localStorage.getItem('links')) {
-    const searchHistory = JSON.parse(localStorage.getItem('links'));
-    createHistoryList(searchHistory);
-}
+const popUp = document.querySelector('.search-view__pop-up');
+const separator = document.querySelector('.search-view__separator');
 
-function createHistoryList(array) {
-    const searchHistoryContainer = document.querySelector('.search-history-list');
-
-    while (searchHistoryContainer.firstChild) {
-        searchHistoryContainer.removeChild(searchHistoryContainer.firstChild);
+function popUpState(toggle) {    
+    if (toggle) {
+        separator.classList.add('search-view__separator_visible');
+        popUp.classList.add('search-view__pop-up_visible');
+    } else {
+        separator.classList.remove('search-view__separator_visible');
+        popUp.classList.remove('search-view__pop-up_visible');
     }
-
-    const lastThree = array.slice(-3);
-
-    lastThree.forEach((item) => {
-        const historyLink = document.createElement('a');
-        historyLink.href = `https://openlibrary.org${item[0]}`;
-        historyLink.target = '_blank';
-        historyLink.textContent = item[1];
-
-        const historyItem = document.createElement('li');
-        historyItem.classList.add('search-history-list__item');
-        // listItem.classList.add('search-view__result-item');
-        historyItem.appendChild(historyLink);
-        searchHistoryContainer.appendChild(historyItem);
-    });
 }
 
 /**
@@ -234,15 +221,72 @@ function createHistoryList(array) {
 
 function debounce(callee, timeoutMs) {
     return function perform(...args) {
-
       let previousCall = this.lastCall
       this.lastCall = Date.now()
-
       if (previousCall && this.lastCall - previousCall <= timeoutMs) {
         clearTimeout(this.lastCallTimer)
       }
-  
       this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
     }
-  }
-  
+}
+
+/* Operations of Search History:
+   ========================================================================== */
+
+const clearButton = document.querySelector('.search-history__clear-button');
+clearButton.disabled = true;
+clearButton.addEventListener('click', () => {
+    localStorage.clear();
+    createHistoryList('null');
+})
+
+/**
+ * First Load of History
+ */
+
+if (localStorage.getItem('links')) {
+    const searchHistory = JSON.parse(localStorage.getItem('links'));
+    createHistoryList(searchHistory);
+}
+
+/**
+ * Dynamic Change of History
+ */
+
+window.addEventListener('storage', () => {
+    const newSearchHistory = JSON.parse(window.localStorage.getItem('links'));
+    localStorage.setItem('links', window.localStorage.getItem('links'));
+    createHistoryList(newSearchHistory);
+    handleInput();
+})
+
+/**
+ * Create History List
+ */
+
+function createHistoryList(value) {
+    clearButton.disabled = true;
+    const searchHistoryContainer = document.querySelector('.search-history-list');
+    while (searchHistoryContainer.firstChild) {
+        searchHistoryContainer.removeChild(searchHistoryContainer.firstChild);
+    }
+    if (value && value !== 'null') {
+        clearButton.disabled = false;
+        let limitArray;
+        if (value.length > 3) {
+            limitArray = value.slice(-3);
+        } else {
+            limitArray = value;
+        }
+        limitArray.forEach((item) => {
+            const historyLink = document.createElement('a');
+            historyLink.href = `https://openlibrary.org${item[0]}`;
+            historyLink.target = '_blank';
+            historyLink.textContent = item[1];
+            const historyItem = document.createElement('li');
+            historyItem.classList.add('search-history-list__item');
+            historyItem.appendChild(historyLink);
+            searchHistoryContainer.appendChild(historyItem);
+        });
+    }  
+}

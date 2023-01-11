@@ -15,6 +15,39 @@
         font-weight: 300;
         color: darkgray;
     }
+
+    &__clear-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin: 2px 0;
+        padding: 0;
+        background-color: rgba(211, 211, 211, 0.3);
+        border: none;
+        font-size: 16px;
+        color: white;
+    }
+
+    &__clear-button:hover {
+        background-color: rgba(211, 211, 211, 0.4);
+        box-shadow: 0 0 2px 0 gainsboro;
+        text-shadow: 0 0 3px white;
+        cursor: pointer;
+    }
+
+    &__clear-button:active {
+        box-shadow: 0 0 3px 0 gainsboro;
+        color: lightgray;
+    }
+
+    &__clear-button:disabled {
+        box-shadow: none;
+        text-shadow: none;
+        opacity: 0.1;
+        cursor: default;
+        color: gray;
+    }
 }
 
 .search-history-list {
