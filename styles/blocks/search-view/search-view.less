@@ -47,10 +47,6 @@
 
     &__result-item {
         padding: 6px 16px;
-
-        @media @screen-only-s {
-            white-space: normal;
-        }
     }
 
     &__result-item:hover {
@@ -67,6 +63,10 @@
         text-decoration: none;
         text-overflow: ellipsis;
         color: inherit;
+
+        @media @screen-only-s {
+            white-space: normal;
+        }
     }
 
     &__result-item-link:visited {
