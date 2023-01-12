@@ -210,11 +210,6 @@ body {
 }
 .search-view__result-item {
   padding: 6px 16px;
-  font-size: 16px;
-  font-weight: 300;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 @media (max-width: 767px) {
   .search-view__result-item {
@@ -227,7 +222,12 @@ body {
 }
 .search-view__result-item-link {
   display: block;
+  font-size: 16px;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
   text-decoration: none;
+  text-overflow: ellipsis;
   color: inherit;
 }
 .search-view__result-item-link:visited {

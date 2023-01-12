@@ -47,11 +47,6 @@
 
     &__result-item {
         padding: 6px 16px;
-        font-size: 16px;
-        font-weight: 300;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
 
         @media @screen-only-s {
             white-space: normal;
@@ -65,7 +60,12 @@
 
     &__result-item-link {
         display: block;
+        font-size: 16px;
+        font-weight: 300;
+        white-space: nowrap;
+        overflow: hidden;
         text-decoration: none;
+        text-overflow: ellipsis;
         color: inherit;
     }
 

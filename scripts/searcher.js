@@ -250,7 +250,7 @@ if (localStorage.getItem('links')) {
 }
 
 /**
- * Dynamic Change of History
+ * Dynamic Update of History
  */
 
 window.addEventListener('storage', () => {
