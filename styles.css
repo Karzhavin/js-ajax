@@ -211,11 +211,6 @@ body {
 .search-view__result-item {
   padding: 6px 16px;
 }
-@media (max-width: 767px) {
-  .search-view__result-item {
-    white-space: normal;
-  }
-}
 .search-view__result-item:hover {
   background-color: lightgrey;
   cursor: pointer;
@@ -229,6 +224,11 @@ body {
   text-decoration: none;
   text-overflow: ellipsis;
   color: inherit;
+}
+@media (max-width: 767px) {
+  .search-view__result-item-link {
+    white-space: normal;
+  }
 }
 .search-view__result-item-link:visited {
   color: #551a8b;
