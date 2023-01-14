@@ -172,7 +172,8 @@ function createBookPoint(book) {
                 try {
                     localStorage.setItem('links', JSON.stringify(linksArray));
                 } catch (error) {
-                    console.log(`Clear your history!`);
+                    createError('Storage is full, please clear your history!');
+                    console.log(`Storage is full.`);
                 }
                 createHistoryList(linksArray);
                 handleInput();
