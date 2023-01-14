@@ -15,23 +15,19 @@
           </div>
           <div class="column column_s-2 column_m-4 column_l-8">
             <article class="search-view">
-              <input class="search-view__line" type="text" placeholder="enter your book title">
+              <input class="search-view__line" type="search" placeholder="enter your book title">
               <hr class="search-view__separator">
               <div class="search-view__pop-up">
                 <ul class="list search-view__result-list"></ul>
                 <div class="search-view__detailed-information">
                   <img
                     class="search-view__item-image"
-                    src=""
+                    src="styles/blocks/search-view/none_image.png"
                     alt="cover of book"
                     width="102"
                     height="140">
                   <div class="search-view__description-container">
                     <p class="search-view__item-title"></p>
-                    <div class="search-view__item-row">
-                      <span class="search-view__item-author"></span>
-                      <span class="search-view__item-year"></span>
-                    </div>
                     <p class="search-view__item-description"></p>
                   </div>
                 </div>
@@ -39,7 +35,13 @@
             </article>
           </div>
           <div class="column column_s-2 column_m-2 column_l-4">
-            <aside class="search-history"></aside>
+            <div class="search-history">
+              <h2 class="search-history__heading">Search History</h2>
+              <button class="search-history__clear-button" title="Clear History">
+                <span>clear button</span>
+              </button>
+              <ul class="search-history-list"></ul>
+            </div>
           </div>
         </div>
       </div>

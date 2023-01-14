@@ -47,20 +47,30 @@
 
     &__result-item {
         padding: 6px 16px;
+    }
+
+    &__result-item:hover {
+        background-color: lightgrey;
+        cursor: pointer;
+    }
+
+    &__result-item-link {
+        display: block;
         font-size: 16px;
         font-weight: 300;
         white-space: nowrap;
-        text-overflow: ellipsis;
         overflow: hidden;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        color: inherit;
 
         @media @screen-only-s {
             white-space: normal;
         }
     }
 
-    &__result-item:hover {
-        background-color: lightgrey;
-        cursor: pointer;
+    &__result-item-link:visited {
+        color: rgb(85, 26, 139);
     }
 
     &__detailed-information {

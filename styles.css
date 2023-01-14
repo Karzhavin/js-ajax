@@ -1,4 +1,5 @@
 body {
+  position: relative;
   margin: 0;
   background-color: #fff;
   font-family: sans-serif;
@@ -210,20 +211,28 @@ body {
 }
 .search-view__result-item {
   padding: 6px 16px;
-  font-size: 16px;
-  font-weight: 300;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-@media (max-width: 767px) {
-  .search-view__result-item {
-    white-space: normal;
-  }
 }
 .search-view__result-item:hover {
   background-color: lightgrey;
   cursor: pointer;
+}
+.search-view__result-item-link {
+  display: block;
+  font-size: 16px;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+@media (max-width: 767px) {
+  .search-view__result-item-link {
+    white-space: normal;
+  }
+}
+.search-view__result-item-link:visited {
+  color: #551a8b;
 }
 .search-view__detailed-information {
   display: none;
@@ -256,5 +265,106 @@ body {
   display: flex;
 }
 .search-history {
-  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 2px solid lightgrey;
+  box-shadow: 0 0 3px 0 lightgrey;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.search-history__heading {
+  margin: 0;
+  padding: 6px 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 300;
+  color: darkgray;
+}
+.search-history__clear-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 2px 0;
+  padding: 0;
+  background-color: rgba(211, 211, 211, 0.3);
+  border: none;
+  font-size: 16px;
+  color: white;
+}
+.search-history__clear-button:hover {
+  background-color: rgba(211, 211, 211, 0.4);
+  box-shadow: 0 0 2px 0 gainsboro;
+  text-shadow: 0 0 3px white;
+  cursor: pointer;
+}
+.search-history__clear-button:active {
+  box-shadow: 0 0 3px 0 gainsboro;
+  color: lightgray;
+}
+.search-history__clear-button:disabled {
+  box-shadow: none;
+  text-shadow: none;
+  opacity: 0.1;
+  cursor: default;
+  color: gray;
+}
+.search-history-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.search-history-list__item {
+  padding: 8px 16px;
+}
+.error-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.error-view__sticker {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: max-content;
+  padding: 20px 25px 15px;
+  border: 2px solid darkgray;
+  background-color: white;
+  box-shadow: 0 0 4px 0 black;
+  border-radius: 20px;
+}
+.error-view__heading {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 300;
+}
+.error-view__text {
+  margin: 0 0 32px;
+  font-size: 14px;
+  font-weight: 300;
+}
+.error-view__exit-button {
+  margin: 0;
+  padding: 3px 4px;
+  background-color: lightgray;
+  border: 1px solid darkgray;
+  border-radius: 5px;
+}
+.error-view__exit-button:hover {
+  background-color: gainsboro;
+  box-shadow: 0 0 2px 0 gray;
+  color: white;
+  cursor: pointer;
+}
+.error-view__exit-button:active {
+  box-shadow: 0 0 2px 0 gainsboro;
+  color: gray;
 }
