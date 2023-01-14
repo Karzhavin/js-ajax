@@ -1,4 +1,5 @@
 body {
+  position: relative;
   margin: 0;
   background-color: #fff;
   font-family: sans-serif;
@@ -316,4 +317,54 @@ body {
 }
 .search-history-list__item {
   padding: 8px 16px;
+}
+.error-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.error-view__sticker {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: max-content;
+  padding: 20px 25px 15px;
+  border: 2px solid darkgray;
+  background-color: white;
+  box-shadow: 0 0 4px 0 black;
+  border-radius: 20px;
+}
+.error-view__heading {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 300;
+}
+.error-view__text {
+  margin: 0 0 32px;
+  font-size: 14px;
+  font-weight: 300;
+}
+.error-view__exit-button {
+  margin: 0;
+  padding: 3px 4px;
+  background-color: lightgray;
+  border: 1px solid darkgray;
+  border-radius: 5px;
+}
+.error-view__exit-button:hover {
+  background-color: gainsboro;
+  box-shadow: 0 0 2px 0 gray;
+  color: white;
+  cursor: pointer;
+}
+.error-view__exit-button:active {
+  box-shadow: 0 0 2px 0 gainsboro;
+  color: gray;
 }

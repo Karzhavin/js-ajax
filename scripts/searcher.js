@@ -29,6 +29,35 @@ async function getBookInfo(key) {
     throw error;
 }
 
+/* Error:
+   ========================================================================== */
+
+function createError(text) {
+    searchLine.blur();
+    const bodyPage = document.querySelector('body');
+    const ErrorView = document.createElement('div');
+    ErrorView.classList.add('error-view');
+    const ErrorViewSticker = document.createElement('div');
+    ErrorViewSticker.classList.add('error-view__sticker');
+    const ErrorHeading = document.createElement('h2');
+    ErrorHeading.classList.add('error-view__heading');
+    ErrorHeading.textContent = 'Error message:';
+    const ErrorText = document.createElement('p');
+    ErrorText.classList.add('error-view__text');
+    ErrorText.textContent = text;
+    const ErrorExitButton = document.createElement('button');
+    ErrorExitButton.classList.add('error-view__exit-button');
+    ErrorExitButton.textContent = 'close';
+    ErrorExitButton.addEventListener('click', () => {
+        bodyPage.removeChild(ErrorView);
+    });
+    ErrorViewSticker.appendChild(ErrorHeading);
+    ErrorViewSticker.appendChild(ErrorText);
+    ErrorViewSticker.appendChild(ErrorExitButton);
+    ErrorView.appendChild(ErrorViewSticker);
+    bodyPage.appendChild(ErrorView);
+}
+
 /* Events of Window Section:
    ========================================================================== */
 
@@ -44,14 +73,17 @@ searchLine.addEventListener('input', debouncedHandle);
  * 1. Handle Input
  */
 
+const resultList = document.querySelector('.search-view__result-list');
+
 function handleInput() {
-    (async function() {
+    (async function () {
         const input = searchLine.value.replace(/\s+/g, '+');
         if (input) {
             let result = {};
             try {
                 result = await getBookData(input);
             } catch (error) {
+                createError('An error occurred, please refresh the page!');
                 console.log(error);
                 return;
             }
@@ -72,16 +104,14 @@ function handleInput() {
 
 /**
  * 2. Create List:
- * 
+ *
  * -- Fill in Result List
  */
-
-const resultList = document.querySelector('.search-view__result-list');
 
 function createListOfBooks(books) {
     const newList = books.slice();
     while (resultList.firstChild) {
-      resultList.removeChild(resultList.firstChild);
+        resultList.removeChild(resultList.firstChild);
     }
     if (localStorage.getItem('links') && localStorage.getItem('links') !== 'null') {
         let counter = 5;
@@ -141,11 +171,11 @@ function createBookPoint(book) {
                 linksArray.push(book);
                 try {
                     localStorage.setItem('links', JSON.stringify(linksArray));
-                    createHistoryList(linksArray);
-                    handleInput();
                 } catch (error) {
                     console.log(`Clear your history!`);
                 }
+                createHistoryList(linksArray);
+                handleInput();
             }
         } else {
             localStorage.setItem('links', JSON.stringify([book]));
@@ -161,11 +191,12 @@ function createBookPoint(book) {
     listItem.addEventListener('mouseover', debouncedFillInfo);
     function fillDetailedInformation() {
         detailedInformation.classList.add('search-view__detailed-information_visible');
-        (async function() {
+        (async function () {
             let info = {};
             try {
                 info = await getBookInfo(book[0]);
             } catch (error) {
+                bookDescription.textContent = 'Book not found...'
                 console.log(error);
                 return;
             }
@@ -190,13 +221,12 @@ function createBookPoint(book) {
                 bookDescription.textContent = 'none description';
             }
         })();
-    } 
+    }
     listItem.addEventListener('mouseout', () => {
         detailedInformation.classList.remove('search-view__detailed-information_visible');
     });
     resultList.appendChild(listItem);
 }
-
 
 /**
  * 3. PopUp
@@ -205,7 +235,7 @@ function createBookPoint(book) {
 const popUp = document.querySelector('.search-view__pop-up');
 const separator = document.querySelector('.search-view__separator');
 
-function popUpState(toggle) {    
+function popUpState(toggle) {
     if (toggle) {
         separator.classList.add('search-view__separator_visible');
         popUp.classList.add('search-view__pop-up_visible');
@@ -221,13 +251,13 @@ function popUpState(toggle) {
 
 function debounce(callee, timeoutMs) {
     return function perform(...args) {
-      let previousCall = this.lastCall
-      this.lastCall = Date.now()
-      if (previousCall && this.lastCall - previousCall <= timeoutMs) {
-        clearTimeout(this.lastCallTimer)
-      }
-      this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
-    }
+        const previousCall = this.lastCall;
+        this.lastCall = Date.now();
+        if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+            clearTimeout(this.lastCallTimer);
+        }
+        this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs);
+    };
 }
 
 /* Operations of Search History:
@@ -238,7 +268,7 @@ clearButton.disabled = true;
 clearButton.addEventListener('click', () => {
     localStorage.clear();
     createHistoryList('null');
-})
+});
 
 /**
  * First Load of History
@@ -255,10 +285,9 @@ if (localStorage.getItem('links')) {
 
 window.addEventListener('storage', () => {
     const newSearchHistory = JSON.parse(window.localStorage.getItem('links'));
-    localStorage.setItem('links', window.localStorage.getItem('links'));
     createHistoryList(newSearchHistory);
     handleInput();
-})
+});
 
 /**
  * Create History List
@@ -288,5 +317,5 @@ function createHistoryList(value) {
             historyItem.appendChild(historyLink);
             searchHistoryContainer.appendChild(historyItem);
         });
-    }  
+    }
 }
